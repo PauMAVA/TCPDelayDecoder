@@ -18,13 +18,14 @@ public class JsonReader {
     public HashMap<Integer, Double> getDelayFromPackets() {
         try {
             String data = new String(Files.readAllBytes(this.file.toPath()));
-            String regexFrameTime = Pattern.quote("\"tcp.time_delta\"") + "(.*?)" + Pattern.quote("\r");
+            String regexFrameTime = Pattern.quote("\"frame.time_delta\"") + "(.*?)" + Pattern.quote(",");
             String regexFrameNum = Pattern.quote("\"frame.number\"") + "(.*?)" + Pattern.quote(",");
             Pattern frameTimePattern = Pattern.compile(regexFrameTime);
             Pattern frameNumPattern = Pattern.compile(regexFrameNum);
             Matcher frameTimeMatcher = frameTimePattern.matcher(data);
             Matcher frameNumMatcher = frameNumPattern.matcher(data);
             HashMap<Integer, Double> map = new HashMap<>();
+            map.put(0, -1D);
             while (frameNumMatcher.find() && frameTimeMatcher.find()) {
                 Integer i = Integer.parseInt(frameNumMatcher.group(1).replace(" ", "").replace("\t", "").replace("\n", "").replace(":", "").replace("\"", "").replace(",", ""));
                 Double d = Double.parseDouble(frameTimeMatcher.group(1).replace(" ", "").replace("\t", "").replace("\n", "").replace(":", "").replace("\"", "").replace(",", ""));
